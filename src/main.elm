@@ -35,17 +35,19 @@ line color rotation =
         []
 
 
+segment color rotation =
+    Svg.g []
+        [ dot color rotation
+        , line color rotation
+        ]
+
+
 main =
-    [ dot "skyblue" 0
-    , line "skyblue" 0
-    , dot "orange" 72
-    , line "orange" 72
-    , dot "red" 144
-    , line "red" 144
-    , dot "lime" 216
-    , line "lime" 216
-    , dot "maroon" 288
-    , line "maroon" 288
+    [ segment "skyblue" 0
+    , segment "orange" 72
+    , segment "red" 144
+    , segment "lime" 216
+    , segment "maroon" 288
     ]
         |> Svg.svg
             [ Svg.Attributes.style "background: pink"
