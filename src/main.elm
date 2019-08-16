@@ -35,25 +35,45 @@ line color rotation =
         []
 
 
-segment color rotation =
-    Svg.g []
-        [ dot color rotation
+segment color rotation children =
+    Svg.g
+        []
+        [ Svg.g
+            [ Svg.Attributes.transform
+                (String.concat
+                    [ "rotate("
+                    , String.fromFloat rotation
+                    , ") translate(80)"
+                    ]
+                )
+            ]
+            children
+        , dot color rotation
         , line color rotation
         ]
 
 
 main =
-    [ segment "skyblue" 0
-    , segment "orange" 72
-    , segment "red" 144
-    , segment "lime" 216
-    , segment "maroon" 288
+    [ segment "skyblue"
+        0
+        [ segment "red" 15 []
+        , segment "blue"
+            -15
+            [ segment "yellow" 45 []
+            , segment "black" -20 []
+            , segment "green" -90 []
+            ]
+        ]
+    , segment "orange" 72 []
+    , segment "red" 144 []
+    , segment "lime" 216 []
+    , segment "maroon" 288 []
     ]
         |> Svg.svg
             [ Svg.Attributes.style "background: pink"
             , Svg.Attributes.height "100%"
             , Svg.Attributes.width "100%"
-            , Svg.Attributes.viewBox "-300 -300 600 600"
+            , Svg.Attributes.viewBox "-500 -500 1000 1000"
             ]
         |> Element.html
         |> Element.layout [ Element.width Element.fill, Element.height Element.fill ]
