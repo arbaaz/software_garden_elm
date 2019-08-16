@@ -5,47 +5,23 @@ import Svg
 import Svg.Attributes
 
 
+dot color rotation =
+    Svg.circle
+        [ Svg.Attributes.r "10"
+        , Svg.Attributes.cx "0"
+        , Svg.Attributes.cy "0"
+        , Svg.Attributes.transform ("rotate(" ++ String.fromFloat rotation ++ ") translate(80)")
+        , Svg.Attributes.fill color
+        ]
+        []
+
+
 main =
-    [ Svg.circle
-        [ Svg.Attributes.r "10"
-        , Svg.Attributes.cx "0"
-        , Svg.Attributes.cy "0"
-        , Svg.Attributes.transform "translate(80)"
-        , Svg.Attributes.fill "skyblue"
-        ]
-        []
-    , Svg.circle
-        [ Svg.Attributes.r "10"
-        , Svg.Attributes.cx "0"
-        , Svg.Attributes.cy "0"
-        , Svg.Attributes.fill "orange"
-        , Svg.Attributes.transform "rotate(72) translate(80)"
-        ]
-        []
-    , Svg.circle
-        [ Svg.Attributes.r "10"
-        , Svg.Attributes.cx "0"
-        , Svg.Attributes.cy "0"
-        , Svg.Attributes.fill "red"
-        , Svg.Attributes.transform "rotate(144) translate(80)"
-        ]
-        []
-    , Svg.circle
-        [ Svg.Attributes.r "10"
-        , Svg.Attributes.cx "00"
-        , Svg.Attributes.cy "0"
-        , Svg.Attributes.fill "lime"
-        , Svg.Attributes.transform "rotate(216) translate(80)"
-        ]
-        []
-    , Svg.circle
-        [ Svg.Attributes.r "10"
-        , Svg.Attributes.cx "0"
-        , Svg.Attributes.cy "0"
-        , Svg.Attributes.fill "maroon"
-        , Svg.Attributes.transform "rotate(288) translate(80)"
-        ]
-        []
+    [ dot "skyblue" 0
+    , dot "orange" 72
+    , dot "red" 144
+    , dot "lime" 216
+    , dot "maroon" 288
     ]
         |> Svg.svg
             [ Svg.Attributes.style "background: pink"
