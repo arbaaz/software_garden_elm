@@ -16,12 +16,36 @@ dot color rotation =
         []
 
 
+line color rotation =
+    Svg.line
+        [ Svg.Attributes.strokeWidth "1"
+        , Svg.Attributes.x1 "0"
+        , Svg.Attributes.y1 "0"
+        , Svg.Attributes.x2 "80"
+        , Svg.Attributes.y2 "0"
+        , Svg.Attributes.stroke color
+        , Svg.Attributes.transform
+            (String.concat
+                [ "rotate("
+                , String.fromFloat rotation
+                , ")"
+                ]
+            )
+        ]
+        []
+
+
 main =
     [ dot "skyblue" 0
+    , line "skyblue" 0
     , dot "orange" 72
+    , line "orange" 72
     , dot "red" 144
+    , line "red" 144
     , dot "lime" 216
+    , line "lime" 216
     , dot "maroon" 288
+    , line "maroon" 288
     ]
         |> Svg.svg
             [ Svg.Attributes.style "background: pink"
