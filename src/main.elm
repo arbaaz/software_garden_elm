@@ -1,27 +1,30 @@
 module Main exposing (main)
 
+import Browser
+import Browser.Events
+import Dict
 import Element
 import Svg
 import Svg.Attributes
 
 
-dot color rotation =
+dot age color rotation =
     Svg.circle
-        [ Svg.Attributes.r "10"
+        [ Svg.Attributes.r (String.fromFloat age)
         , Svg.Attributes.cx "0"
         , Svg.Attributes.cy "0"
-        , Svg.Attributes.transform ("rotate(" ++ String.fromFloat rotation ++ ") translate(80)")
+        , Svg.Attributes.transform ("rotate(" ++ String.fromFloat rotation ++ ") translate(" ++ String.fromFloat (age * 10) ++ ")")
         , Svg.Attributes.fill color
         ]
         []
 
 
-line color rotation =
+line age color rotation =
     Svg.line
-        [ Svg.Attributes.strokeWidth "1"
+        [ Svg.Attributes.strokeWidth (String.fromFloat age)
         , Svg.Attributes.x1 "0"
         , Svg.Attributes.y1 "0"
-        , Svg.Attributes.x2 "80"
+        , Svg.Attributes.x2 (String.fromFloat (age * 10))
         , Svg.Attributes.y2 "0"
         , Svg.Attributes.stroke color
         , Svg.Attributes.transform
@@ -35,40 +38,74 @@ line color rotation =
         []
 
 
-segment color rotation children =
-    Svg.g
-        []
-        [ Svg.g
-            [ Svg.Attributes.transform
-                (String.concat
-                    [ "rotate("
-                    , String.fromFloat rotation
-                    , ") translate(80)"
+segment age { color, rotation } =
+    if age <= 0 then
+        Svg.g [] []
+
+    else
+        Svg.g []
+            [ rules
+                |> Dict.get color
+                |> Maybe.withDefault []
+                |> List.map (segment (age - 1))
+                |> Svg.g
+                    [ Svg.Attributes.transform
+                        (String.concat
+                            [ "rotate("
+                            , String.fromFloat rotation
+                            , ") translate("
+                            , String.fromFloat (age * 10)
+                            , ")"
+                            ]
+                        )
                     ]
-                )
+            , dot age color rotation
+            , line age color rotation
             ]
-            children
-        , dot color rotation
-        , line color rotation
-        ]
 
 
 main =
-    [ segment "skyblue"
-        0
-        [ segment "red" 15 []
-        , segment "blue"
-            -15
-            [ segment "yellow" 45 []
-            , segment "black" -20 []
-            , segment "green" -90 []
+    Browser.element
+        { init = init
+        , view = view
+        , update = update
+        , subscriptions = subscriptions
+        }
+
+
+init () =
+    ( 0, Cmd.none )
+
+
+update duration age =
+    ( duration
+        |> Debug.log "Duration"
+        |> (+) age
+        |> Debug.log "Age"
+    , Cmd.none
+    )
+
+
+subscriptions age =
+    Browser.Events.onAnimationFrameDelta identity
+
+
+rules =
+    Dict.empty
+        |> Dict.insert "brown"
+            [ { color = "brown", rotation = 0 }
+            , { color = "green", rotation = 20 }
+            , { color = "green", rotation = -30 }
             ]
-        ]
-    , segment "orange" 72 []
-    , segment "red" 144 []
-    , segment "lime" 216 []
-    , segment "maroon" 288 []
-    ]
+        |> Dict.insert "green"
+            [ { color = "red", rotation = -45 }
+            , { color = "red", rotation = -5 }
+            , { color = "red", rotation = 50 }
+            ]
+
+
+view age =
+    [ segment (age / 500) { color = "brown", rotation = -90 } ]
         |> Svg.svg
             [ Svg.Attributes.style "background: pink"
             , Svg.Attributes.height "100%"
